@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Google OAuth</title>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+
+<body>
+    <h1>Test Google OAuth</h1>
+    <button id="testBtn">Click para probar Google</button>
+
+    <script>
+        document.getElementById('testBtn').addEventListener('click', () => {
+            console.log('Button clicked!');
+            console.log('Google object:', typeof google !== 'undefined' ? google : 'NOT LOADED');
+
+            if (typeof google === 'undefined' || !google.accounts) {
+                alert('Google library NOT loaded');
+                return;
+            }
+
+            alert('Google library IS loaded!');
+
+            try {
+                google.accounts.id.initialize({
+                    client_id: '128530415849-a4uhfnp9b1rsgmsi39qkjqd0a4mh8mjn.apps.googleusercontent.com',
+                    callback: (response) => {
+                        console.log('Google response:', response);
+                        alert('Login successful!');
+                    }
+                });
+
+                google.accounts.id.prompt();
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error: ' + error.message);
+            }
+        });
+    </script>
+</body>
+
+</html>

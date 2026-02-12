@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>ECG Monitor - Verificar Email</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#d32f2f",
+                        "primary-dark": "#b71c1c",
+                        "background-light": "#fdfafa",
+                        "background-dark": "#1a0b0b",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+    <style type="text/tailwindcss">
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .code-input {
+            width: 3.5rem;
+            height: 4rem;
+            font-size: 2rem;
+            text-align: center;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body
+    class="bg-background-light dark:bg-background-dark min-h-screen flex flex-col font-display transition-colors duration-300">
+    <header
+        class="flex items-center justify-between whitespace-nowrap border-b border-solid border-red-100 dark:border-red-900/30 px-6 py-3 bg-white dark:bg-[#1a0b0b]">
+        <a href="index.html" class="flex items-center gap-4 text-[#111618] dark:text-white">
+            <div class="text-primary">
+                <span class="material-symbols-outlined text-3xl">monitor_heart</span>
+            </div>
+            <h2 class="text-[#111618] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em]">ECG Monitor
+            </h2>
+        </a>
+    </header>
+
+    <main class="flex-grow flex items-center justify-center p-6">
+        <div
+            class="flex flex-col w-full max-w-[480px] bg-white dark:bg-[#251212] rounded-xl shadow-[0_20px_50px_rgba(211,47,47,0.1)] dark:shadow-none border border-red-50 dark:border-red-900/20 p-8">
+            <div class="flex flex-col items-center mb-8">
+                <div class="size-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
+                    <span class="material-symbols-outlined text-primary text-4xl">mark_email_read</span>
+                </div>
+                <h1
+                    class="text-[#111618] dark:text-white tracking-tight text-[32px] font-bold leading-tight text-center">
+                    Verificar Email</h1>
+                <p class="text-slate-500 dark:text-red-200/60 text-sm font-medium leading-tight text-center pt-2">
+                    Hemos enviado un código de 6 dígitos a
+                </p>
+                <p id="emailDisplay" class="text-primary font-bold text-base mt-1"></p>
+            </div>
+
+            <form id="verifyForm" class="space-y-6">
+                <div class="flex flex-col items-center gap-4">
+                    <p class="text-slate-700 dark:text-red-100 text-sm font-semibold">Ingresa el código de verificación
+                    </p>
+                    <div class="flex gap-2 justify-center">
+                        <input id="code1"
+                            class="code-input form-input rounded-lg text-[#111618] dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary border border-slate-200 dark:border-red-900/40 bg-white dark:bg-[#1a0b0b] transition-all"
+                            maxlength="1" type="text" pattern="[0-9]" inputmode="numeric" required />
+                        <input id="code2"
+                            class="code-input form-input rounded-lg text-[#111618] dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary border border-slate-200 dark:border-red-900/40 bg-white dark:bg-[#1a0b0b] transition-all"
+                            maxlength="1" type="text" pattern="[0-9]" inputmode="numeric" required />
+                        <input id="code3"
+                            class="code-input form-input rounded-lg text-[#111618] dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary border border-slate-200 dark:border-red-900/40 bg-white dark:bg-[#1a0b0b] transition-all"
+                            maxlength="1" type="text" pattern="[0-9]" inputmode="numeric" required />
+                        <input id="code4"
+                            class="code-input form-input rounded-lg text-[#111618] dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary border border-slate-200 dark:border-red-900/40 bg-white dark:bg-[#1a0b0b] transition-all"
+                            maxlength="1" type="text" pattern="[0-9]" inputmode="numeric" required />
+                        <input id="code5"
+                            class="code-input form-input rounded-lg text-[#111618] dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary border border-slate-200 dark:border-red-900/40 bg-white dark:bg-[#1a0b0b] transition-all"
+                            maxlength="1" type="text" pattern="[0-9]" inputmode="numeric" required />
+                        <input id="code6"
+                            class="code-input form-input rounded-lg text-[#111618] dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary border border-slate-200 dark:border-red-900/40 bg-white dark:bg-[#1a0b0b] transition-all"
+                            maxlength="1" type="text" pattern="[0-9]" inputmode="numeric" required />
+                    </div>
+                    <p class="text-xs text-slate-500 dark:text-red-200/60 text-center">
+                        El código expira en <span id="countdown" class="font-bold text-primary">10:00</span>
+                    </p>
+                </div>
+
+                <button id="verifyButton"
+                    class="w-full bg-primary hover:bg-primary-dark text-white h-14 rounded-lg font-bold text-lg shadow-lg shadow-primary/20 transition-all active:scale-[0.98]"
+                    type="submit">
+                    Verificar código
+                </button>
+            </form>
+
+            <div class="mt-6 text-center">
+                <p class="text-sm text-slate-500 dark:text-red-200/60">
+                    ¿No recibiste el código?
+                    <button id="resendButton" class="text-primary font-bold hover:underline" type="button">
+                        Reenviar código
+                    </button>
+                </p>
+            </div>
+
+            <div class="mt-8 pt-6 border-t border-slate-100 dark:border-red-900/20 text-center">
+                <a class="text-sm text-slate-500 dark:text-red-200/60 hover:text-primary transition-colors"
+                    href="login.html">
+                    ← Volver al inicio de sesión
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="py-6 px-10 text-center text-slate-400 dark:text-red-900/60 text-xs">
+        <p>© 2024 ECG Monitor System. Todos los derechos reservados.</p>
+    </footer>
+
+    <script src="js/api.js"></script>
+    <script src="js/utils.js"></script>
+    <script>
+        // Get email from sessionStorage (set during registration)
+        const urlParams = new URLSearchParams(window.location.search);
+        const email = urlParams.get('email') || sessionStorage.getItem('pendingVerificationEmail');
+
+        if (!email) {
+            showToast('Sesión expirada. Por favor, regístrate nuevamente.', 'error');
+            setTimeout(() => window.location.href = 'register.html', 2000);
+            return;
+        }
+
+        document.getElementById('emailDisplay').textContent = email;
+
+        // Auto-focus and auto-advance code inputs
+        const codeInputs = [
+            document.getElementById('code1'),
+            document.getElementById('code2'),
+            document.getElementById('code3'),
+            document.getElementById('code4'),
+            document.getElementById('code5'),
+            document.getElementById('code6')
+        ];
+
+        codeInputs.forEach((input, index) => {
+            input.addEventListener('input', (e) => {
+                if (e.target.value.length === 1 && index < 5) {
+                    codeInputs[index + 1].focus();
+                }
+            });
+
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Backspace' && !e.target.value && index > 0) {
+                    codeInputs[index - 1].focus();
+                }
+            });
+
+            input.addEventListener('paste', (e) => {
+                e.preventDefault();
+                const pastedData = e.clipboardData.getData('text').slice(0, 6);
+                pastedData.split('').forEach((char, i) => {
+                    if (codeInputs[i]) {
+                        codeInputs[i].value = char;
+                    }
+                });
+                if (pastedData.length === 6) {
+                    codeInputs[5].focus();
+                }
+            });
+        });
+
+        // Focus first input
+        codeInputs[0].focus();
+
+        // Countdown timer
+        let timeLeft = 600; // 10 minutes
+        const countdownEl = document.getElementById('countdown');
+
+        const timer = setInterval(() => {
+            timeLeft--;
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            countdownEl.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+
+            if (timeLeft <= 0) {
+                clearInterval(timer);
+                showToast('El código ha expirado. Por favor, solicita uno nuevo.', 'error');
+                document.getElementById('verifyButton').disabled = true;
+            }
+        }, 1000);
+
+        // Verify form submission
+        document.getElementById('verifyForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const code = codeInputs.map(input => input.value).join('');
+
+            if (code.length !== 6) {
+                showToast('Por favor, ingresa el código completo', 'error');
+                return;
+            }
+
+            const button = document.getElementById('verifyButton');
+            showLoading(button);
+
+            try {
+                const result = await api.verifyEmail(email, code);
+
+                if (result.success) {
+                    // Store tokens
+                    localStorage.setItem('accessToken', result.data.accessToken);
+                    localStorage.setItem('refreshToken', result.data.refreshToken);
+                    localStorage.setItem('user', JSON.stringify(result.data.user));
+                    localStorage.removeItem('verificationEmail');
+
+                    showToast('¡Email verificado exitosamente!', 'success');
+
+                    setTimeout(() => {
+                        window.location.href = 'dashboard.html';
+                    }, 1000);
+                }
+            } catch (error) {
+                showToast(error.message || 'Error al verificar el código', 'error');
+                codeInputs.forEach(input => input.value = '');
+                codeInputs[0].focus();
+            } finally {
+                hideLoading(button);
+            }
+        });
+
+        // Resend code
+        document.getElementById('resendButton').addEventListener('click', async () => {
+            const button = document.getElementById('resendButton');
+            button.disabled = true;
+            button.textContent = 'Enviando...';
+
+            try {
+                // Re-register to get new code
+                const password = localStorage.getItem('tempPassword');
+                if (!password) {
+                    showToast('Error: sesión expirada. Por favor, regístrate nuevamente.', 'error');
+                    setTimeout(() => window.location.href = 'register.html', 2000);
+                    return;
+                }
+
+                await api.register(email, password);
+                showToast('Código reenviado exitosamente', 'success');
+
+                // Reset countdown
+                timeLeft = 600;
+                document.getElementById('verifyButton').disabled = false;
+
+                // Clear inputs
+                codeInputs.forEach(input => input.value = '');
+                codeInputs[0].focus();
+            } catch (error) {
+                showToast(error.message || 'Error al reenviar el código', 'error');
+            } finally {
+                button.disabled = false;
+                button.textContent = 'Reenviar código';
+            }
+        });
+    </script>
+</body>
+
+</html>

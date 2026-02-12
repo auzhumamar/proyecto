@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>ECG Monitor - Dashboard</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#e11d48",
+                        "background-light": "#fdfafa",
+                        "background-dark": "#1a1111",
+                        "emergency": "#be123c",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+    <style type="text/tailwindcss">
+        body { font-family: 'Inter', sans-serif; }
+        .ecg-grid {
+            background-size: 20px 20px;
+            background-image: radial-gradient(circle, #fce7e7 1px, transparent 1px);
+        }
+        .dark .ecg-grid {
+            background-image: radial-gradient(circle, #4c1d1d 1px, transparent 1px);
+        }
+    </style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark text-[#1a1111] dark:text-rose-50 antialiased">
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <aside
+            class="w-64 border-r border-rose-100 dark:border-rose-900/30 bg-white dark:bg-[#1a1111] flex flex-col shrink-0">
+            <div class="p-6 flex flex-col gap-8 h-full">
+                <div class="flex items-center gap-3">
+                    <div class="size-10 bg-primary/10 rounded-lg flex items-center justify-center text-primary">
+                        <span class="material-symbols-outlined text-3xl font-fill">monitor_heart</span>
+                    </div>
+                    <div>
+                        <h1 class="text-lg font-bold leading-none">ECG Monitor</h1>
+                        <p class="text-xs text-rose-600/70 font-medium">Monitoreo Vital</p>
+                    </div>
+                </div>
+
+                <nav class="flex flex-col gap-2 flex-1">
+                    <a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary text-white font-semibold"
+                        href="dashboard.html">
+                        <span class="material-symbols-outlined">home</span>
+                        <span>Inicio</span>
+                    </a>
+                    <a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-rose-50 dark:hover:bg-white/5 text-[#1a1111] dark:text-rose-200 font-medium transition-colors"
+                        href="statistics.html">
+                        <span class="material-symbols-outlined">analytics</span>
+                        <span>Estadísticas</span>
+                    </a>
+                    <a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-rose-50 dark:hover:bg-white/5 text-[#1a1111] dark:text-rose-200 font-medium transition-colors"
+                        href="profile.html">
+                        <span class="material-symbols-outlined">person</span>
+                        <span>Perfil</span>
+                    </a>
+                </nav>
+
+                <div class="flex flex-col gap-2">
+                    <button id="logoutButton"
+                        class="w-full py-3 px-4 bg-primary/10 text-primary text-sm font-bold rounded-lg flex items-center justify-center gap-2 hover:bg-primary/20 transition-colors">
+                        <span class="material-symbols-outlined text-[20px]">logout</span>
+                        <span>Cerrar Sesión</span>
+                    </button>
+                </div>
+
+                <div class="pt-6 border-t border-rose-100 dark:border-rose-900/30">
+                    <div class="flex items-center gap-3 p-2">
+                        <div
+                            class="size-10 rounded-full bg-primary/20 flex items-center justify-center border-2 border-primary/20">
+                            <span class="material-symbols-outlined text-primary">person</span>
+                        </div>
+                        <div class="overflow-hidden flex-1">
+                            <p id="userName" class="text-sm font-bold truncate">Usuario</p>
+                            <p class="text-xs text-rose-600/70 truncate">En servicio</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 flex flex-col overflow-hidden">
+            <!-- Header -->
+            <header
+                class="h-16 border-b border-rose-100 dark:border-rose-900/30 bg-white dark:bg-[#1a1111] flex items-center justify-between px-8 shrink-0">
+                <div class="flex items-center gap-4">
+                    <h2 class="text-xl font-bold">Dashboard en Tiempo Real</h2>
+                    <span id="liveIndicator"
+                        class="px-2.5 py-1 rounded-full bg-rose-50 dark:bg-rose-950 text-rose-600 dark:text-rose-400 text-xs font-bold flex items-center gap-1 border border-rose-100 dark:border-rose-900">
+                        <span class="size-2 rounded-full bg-rose-500 animate-pulse"></span>
+                        EN VIVO
+                    </span>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="flex items-center gap-2">
+                        <span id="patientName" class="text-sm font-medium">Paciente</span>
+                        <span id="patientId" class="text-xs text-rose-600/70">ID: --</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard Content -->
+            <div class="flex-1 overflow-y-auto p-8 bg-background-light dark:bg-background-dark">
+                <div class="max-w-7xl mx-auto flex flex-col gap-6">
+                    <!-- BPM Card -->
+                    <div class="grid grid-cols-1 gap-6">
+                        <div
+                            class="bg-white dark:bg-[#251818] p-8 rounded-xl border border-rose-100 dark:border-rose-900/30 shadow-sm relative overflow-hidden">
+                            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-rose-400">
+                            </div>
+                            <div class="flex items-center justify-between mb-2">
+                                <p class="text-sm font-medium text-rose-600/70">Frecuencia Cardíaca Actual</p>
+                                <a href="tel:911"
+                                    class="flex items-center gap-2 px-4 py-2 bg-emergency text-white rounded-lg hover:bg-rose-800 transition-all shadow-lg active:scale-95 group">
+                                    <span class="material-symbols-outlined group-hover:animate-bounce">call</span>
+                                    <span class="font-bold text-sm">LLAMAR CONTACTO</span>
+                                </a>
+                            </div>
+                            <div class="flex items-baseline gap-3">
+                                <span id="bpmValue"
+                                    class="text-6xl font-bold tabular-nums text-rose-900 dark:text-rose-100 transition-transform duration-200">--</span>
+                                <span class="text-xl font-bold text-rose-600/70">BPM</span>
+                            </div>
+                            <div class="mt-3 flex items-center justify-between">
+                                <p id="bpmStatus" class="text-xs font-medium text-emerald-600">Esperando datos...</p>
+                                <p id="lastUpdate" class="text-xs text-rose-600/70">--</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ECG Waveform and History -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <!-- ECG Waveform -->
+                        <div
+                            class="lg:col-span-2 bg-white dark:bg-[#251818] rounded-xl border border-rose-100 dark:border-rose-900/30 flex flex-col overflow-hidden shadow-sm">
+                            <div
+                                class="p-6 bg-rose-50/50 dark:bg-rose-950/20 border-b border-rose-100 dark:border-rose-900/30 flex items-center justify-between">
+                                <h3 class="text-lg font-bold">Forma de Onda ECG</h3>
+                                <div class="flex items-center gap-2">
+                                    <span
+                                        class="text-xs text-rose-600/70 bg-white dark:bg-rose-900/40 px-2 py-1 rounded">Lead
+                                        II</span>
+                                    <span
+                                        class="text-xs text-rose-600/70 bg-white dark:bg-rose-900/40 px-2 py-1 rounded">25mm/s</span>
+                                </div>
+                            </div>
+                            <div class="relative flex-1 ecg-grid p-6 min-h-[350px] flex items-center">
+                                <svg class="w-full h-48" preserveAspectRatio="none" viewBox="0 0 1000 200">
+                                    <line class="stroke-rose-100 dark:stroke-rose-900/40" stroke-dasharray="4"
+                                        stroke-width="1" x1="0" x2="1000" y1="100" y2="100"></line>
+                                    <path
+                                        d="M0,100 L50,100 L60,80 L70,100 L110,100 L120,20 L135,180 L150,100 L190,100 L210,80 L230,100 L280,100 L330,100 L340,80 L350,100 L390,100 L400,20 L415,180 L430,100 L470,100 L490,80 L510,100 L560,100 L610,100 L620,80 L630,100 L670,100 L680,20 L695,180 L710,100 L750,100 L770,80 L790,100 L840,100 L890,100 L900,80 L910,100 L950,100 L960,20 L975,180 L990,100"
+                                        fill="none" stroke="#e11d48" stroke-linecap="round" stroke-linejoin="round"
+                                        stroke-width="3"></path>
+                                </svg>
+                            </div>
+                        </div>
+
+                        <!-- Recent History -->
+                        <div
+                            class="bg-white dark:bg-[#251818] p-6 rounded-xl border border-rose-100 dark:border-rose-900/30 flex-1 shadow-sm">
+                            <h3 class="text-lg font-bold mb-4">Historial Reciente</h3>
+                            <div id="recentHistory" class="flex flex-col gap-4">
+                                <div class="text-center py-8 text-slate-400">
+                                    <span class="material-symbols-outlined text-4xl mb-2">history</span>
+                                    <p class="text-sm">Cargando historial...</p>
+                                </div>
+                            </div>
+                            <a href="statistics.html"
+                                class="w-full mt-6 py-2 text-sm font-bold text-primary border border-primary/20 rounded-lg hover:bg-primary/5 transition-colors flex items-center justify-center">
+                                Ver Historial Completo
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- System Status -->
+                    <div
+                        class="bg-white dark:bg-[#251818] p-4 rounded-xl border border-rose-100 dark:border-rose-900/30 flex items-center justify-between text-xs text-rose-600/70 shadow-sm">
+                        <div class="flex gap-6">
+                            <span><strong>Dispositivo:</strong> ESP32 + AD8232</span>
+                            <span><strong>Calidad de Señal:</strong> <span
+                                    class="text-emerald-600">Excelente</span></span>
+                            <span><strong>Última Sincronización:</strong> <span id="lastSync">--</span></span>
+                        </div>
+                        <div class="flex items-center gap-1 font-bold">
+                            <span class="size-2 rounded-full bg-emerald-500"></span>
+                            SISTEMA OPERACIONAL
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+
+</html>

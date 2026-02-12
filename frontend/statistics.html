@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>ECG Monitor - Estadísticas</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#e11d48",
+                        "primary-dark": "#be123c",
+                        "background-light": "#f8fafc",
+                        "background-dark": "#0f172a",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer base {
+            body {
+                font-family: 'Inter', sans-serif;
+            }
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark text-[#1e293b] dark:text-slate-200 antialiased">
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <aside
+            class="w-64 border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-background-dark flex flex-col justify-between p-4 shrink-0">
+            <div class="flex flex-col gap-8">
+                <div class="flex items-center gap-3 px-2">
+                    <div class="bg-primary rounded-lg p-1.5 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-white">ecg_heart</span>
+                    </div>
+                    <div class="flex flex-col">
+                        <h1 class="text-base font-bold leading-tight">ECG Monitor</h1>
+                        <p class="text-slate-500 text-xs font-medium">Unidad de Salud</p>
+                    </div>
+                </div>
+
+                <nav class="flex flex-col gap-1">
+                    <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
+                        href="dashboard.html">
+                        <span class="material-symbols-outlined">dashboard</span>
+                        <span class="text-sm font-medium">Dashboard</span>
+                    </a>
+                    <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-primary/10 text-primary"
+                        href="statistics.html">
+                        <span class="material-symbols-outlined"
+                            style="font-variation-settings: 'FILL' 1">bar_chart</span>
+                        <span class="text-sm font-bold">Estadísticas</span>
+                    </a>
+                    <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
+                        href="profile.html">
+                        <span class="material-symbols-outlined">person</span>
+                        <span class="text-sm font-medium">Perfil</span>
+                    </a>
+                </nav>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 flex flex-col overflow-y-auto">
+            <header
+                class="flex items-center justify-between px-8 py-4 bg-white dark:bg-background-dark border-b border-slate-200 dark:border-slate-800 sticky top-0 z-10">
+                <div class="flex items-center gap-4">
+                    <h2 class="text-xl font-bold tracking-tight">Estadísticas de Salud Cardíaca</h2>
+                </div>
+                <div class="flex items-center gap-6">
+                    <button id="downloadReport"
+                        class="px-4 py-2 bg-primary text-white text-sm font-bold rounded-lg flex items-center gap-2 hover:bg-primary-dark transition-colors">
+                        <span class="material-symbols-outlined text-[18px]">download</span>
+                        Descargar Reporte
+                    </button>
+                </div>
+            </header>
+
+            <div class="p-8 max-w-[1200px] mx-auto w-full flex flex-col gap-6">
+                <!-- Time Range Selector -->
+                <div class="flex items-center justify-between">
+                    <div
+                        class="flex items-center gap-2 bg-white dark:bg-slate-800 p-1 rounded-lg border border-slate-200 dark:border-slate-700">
+                        <button data-time-range="day"
+                            class="px-4 py-1.5 text-xs font-bold rounded-md text-slate-500 hover:text-primary">Día</button>
+                        <button data-time-range="week"
+                            class="px-4 py-1.5 text-xs font-bold rounded-md bg-primary text-white shadow-sm">Semana</button>
+                        <button data-time-range="month"
+                            class="px-4 py-1.5 text-xs font-bold rounded-md text-slate-500 hover:text-primary">Mes</button>
+                        <button data-time-range="year"
+                            class="px-4 py-1.5 text-xs font-bold rounded-md text-slate-500 hover:text-primary">Año</button>
+                    </div>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div
+                        class="bg-white dark:bg-slate-800 p-5 rounded-xl border border-slate-200 dark:border-slate-700 flex flex-col gap-1">
+                        <div class="flex justify-between items-start">
+                            <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">BPM Promedio</p>
+                            <span class="material-symbols-outlined text-primary text-[20px]">favorite</span>
+                        </div>
+                        <p class="text-2xl font-bold"><span id="avgBpm">--</span> <span
+                                class="text-sm font-normal text-slate-500">BPM</span></p>
+                    </div>
+
+                    <div
+                        class="bg-white dark:bg-slate-800 p-5 rounded-xl border border-slate-200 dark:border-slate-700 flex flex-col gap-1">
+                        <div class="flex justify-between items-start">
+                            <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">BPM Mínimo</p>
+                            <span class="material-symbols-outlined text-slate-400 text-[20px]">bedtime</span>
+                        </div>
+                        <p class="text-2xl font-bold"><span id="minBpm">--</span> <span
+                                class="text-sm font-normal text-slate-500">BPM</span></p>
+                    </div>
+
+                    <div
+                        class="bg-white dark:bg-slate-800 p-5 rounded-xl border border-slate-200 dark:border-slate-700 flex flex-col gap-1">
+                        <div class="flex justify-between items-start">
+                            <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">BPM Máximo</p>
+                            <span class="material-symbols-outlined text-primary text-[20px]">bolt</span>
+                        </div>
+                        <p class="text-2xl font-bold text-primary"><span id="maxBpm">--</span> <span
+                                class="text-sm font-normal text-primary/70">BPM</span></p>
+                    </div>
+
+                    <div
+                        class="bg-white dark:bg-slate-800 p-5 rounded-xl border border-slate-200 dark:border-slate-700 flex flex-col gap-1">
+                        <div class="flex justify-between items-start">
+                            <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Total Mediciones</p>
+                            <span class="material-symbols-outlined text-slate-400 text-[20px]">analytics</span>
+                        </div>
+                        <p class="text-2xl font-bold"><span id="totalMeasurements">--</span></p>
+                    </div>
+                </div>
+
+                <!-- Measurement History Table -->
+                <div
+                    class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
+                    <div
+                        class="px-6 py-4 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center">
+                        <h3 class="text-base font-bold">Historial de Mediciones</h3>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead>
+                                <tr
+                                    class="bg-slate-50 dark:bg-slate-900/50 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                                    <th class="px-6 py-3">BPM</th>
+                                    <th class="px-6 py-3">Fecha y Hora</th>
+                                    <th class="px-6 py-3">Electrodos</th>
+                                    <th class="px-6 py-3 text-right">Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody id="measurementHistory"
+                                class="divide-y divide-slate-100 dark:divide-slate-700 text-sm">
+                                <tr>
+                                    <td colspan="4" class="px-6 py-12 text-center text-slate-400">
+                                        <span class="material-symbols-outlined text-5xl mb-3">history</span>
+                                        <p class="text-base font-medium">Cargando historial...</p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/statistics.js"></script>
+</body>
+
+</html>
